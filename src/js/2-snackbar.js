@@ -1,54 +1,57 @@
-import iziToast from 'izitoast';
+import izitoast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
-const inputDelay = document.querySelector("input[type='number']");
-inputDelay.classList.add('inputDelay');
-const fullfilledButton = document.querySelector("input[value='fulfilled']");
-fullfilledButton.classList.add('fullfilled');
-const rejectedButton = document.querySelector("input[value='rejected']");
-rejectedButton.classList.add('rejected');
+import errorIcon from '../img/svg/error.svg';
+import successIcon from '../img/svg/circle.svg';
 
-const labels = document.querySelectorAll('label');
-labels.forEach((label) => {
-label.classList.add('labelStyle');
-});
-const fieldSet = document.querySelector('fieldset');
-fieldSet.classList.add('fieldsetStyle');
-const legend = document.querySelector('legend');
-legend.classList.add('legendStyle');
-const submitButton = document.querySelector('button');
-submitButton.classList.add('buttonNotify');
-let delay= 0;
+const createForm = document.querySelector('form');
 
-submitButton.addEventListener('click', (event) => {
-    event.preventDefault();
-    const delay = parseInt(inputDelay.value);
-    const isFullfilled = fullfilledButton.checked;
+createForm.addEventListener('submit', event => {
+  event.preventDefault();
+  const delay = event.currentTarget.elements.delay.value;
+  const radioChecked = document.querySelector('input[name="state"]:checked');
 
-    const makePromise = ({ delay, shouldResolve}) => {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (shouldResolve) {
-                    resolve();
-                } else {
-                    reject();
-                }
-            }, delay);
+  // ==================== Створення проміса ====================
+
+  const promise = new Promise((resolve, reject) => {
+    if (radioChecked.value === 'fulfilled') {
+      resolve(delay);
+    } else {
+      reject(delay);
+    }
+  });
+
+  // ==================== Виконання проміса ====================
+
+  promise
+    .then(delay => {
+      setTimeout(() => {
+        izitoast.success({
+          title: 'OK',
+          message: `Fulfilled promise in ${delay}ms`,
+          position: 'topRight',
+          iconUrl: `${successIcon}`,
+          backgroundColor: '#59A10D',
+          titleColor: '#fff',
+          messageColor: '#fff',
+          messageSize: '16px',
+          progressBarColor: '#B5EA7C',
         });
-    };
-
-    makePromise({ delay, shouldResolve: isFullfilled })
-        .then(() =>
-            iziToast.success({
-                position: 'topCenter',
-                message: `✅ Fullfilled promise in ${delay}ms`,
-            }))
-        .catch(() =>
-            iziToast.error({
-                position: 'topCenter',
-                message: `❌ Rejected promise in ${delay}ms`,
-            }));
-
-    inputDelay.value = '';
-    fullfilledButton.checked = false;
-    rejectedButton.checked = false;
+      }, delay);
+    })
+    .catch(delay => {
+      setTimeout(() => {
+        izitoast.error({
+          title: 'Error',
+          message: `Rejected promise in ${delay}ms`,
+          position: 'topRight',
+          iconUrl: `${errorIcon}`,
+          backgroundColor: '#EF4040',
+          titleColor: '#fff',
+          messageColor: '#fff',
+          messageSize: '16px',
+          progressBarColor: '#FFBEBE',
+        });
+      }, delay);
+    });
+  createForm.reset();
 });
