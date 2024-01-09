@@ -40,13 +40,11 @@ submitButton.addEventListener('click', (event) => {
     makePromise({ delay, shouldResolve: isFullfilled })
         .then(() =>
             iziToast.success({
-                // title: 'OK',
                 position: 'topCenter',
                 message: `✅ Fullfilled promise in ${delay}ms`,
             }))
         .catch(() =>
             iziToast.error({
-                // title: 'Error',
                 position: 'topCenter',
                 message: `❌ Rejected promise in ${delay}ms`,
             }));
