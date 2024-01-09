@@ -1,0 +1,129 @@
+/**
+  |============================
+  | include css partials with
+  | default @import url()
+  |============================
+*/
+/* @import url('./reset.css');
+@import url('./vite-promo.css');
+@import url('./header.css'); */
+
+:root {
+    font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+  
+    color: #242424;
+    background-color: rgba(255, 255, 255, 0.87);
+  
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+  }
+  
+  .timer {
+    display: flex;
+    gap: 27px;
+    margin-top: 40px;
+  }
+  
+  .datetime-picker {
+    width: 272px;
+    height: 40px;
+    border-radius: 4px;
+    border: 1px solid #808080;
+  }
+  
+  .start-button {
+    width: 75px;
+    height: 40px;
+    margin-left: 8px;
+    border-radius: 8px;
+    background: #CFCFCF;
+  }
+  
+  
+  .timer {
+    display: flex;
+    width: 72px;
+    height: 61px;
+    gap: 29px;
+  
+  }
+  
+  .value {
+    color: #2E2F42;
+    font-family: Montserrat;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 48px;
+    /* 120% */
+    letter-spacing: 1.6px;
+    width: 55px;
+    height: 48px;
+  }
+  
+  
+  .form {
+    margin-left: 156px;
+  }
+  
+  .label {
+    color: #2E2F42;
+    font-family: Montserrat;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    /* 150% */
+  }
+  
+  .inputDelay {
+    width: 360px;
+    height: 40px;
+    margin-bottom: 30px;
+    margin-bottom: 8px;
+  }
+  
+  .labelStyle {
+    color: #2E2F42;
+    font-family: Montserrat;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    /* 150% */
+    letter-spacing: 0.64px;
+  }
+  
+  .fieldsetStyle {
+    width: 360px;
+    height: 64px;
+    padding: 0;
+  }
+  
+  .legendStyle {
+    color: #2E2F42;
+    font-family: Montserrat;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    /* 150% */
+    letter-spacing: 0.64px;
+  }
+  
+  .buttonNotify {
+    display: flex;
+    width: 360px;
+    padding: 8px 16px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 8px;
+    background: #4E75FF;
+    margin-top: 32px;
+  }

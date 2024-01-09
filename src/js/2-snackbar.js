@@ -1,46 +1,57 @@
-<section class="vite-promo">
-  <div class="container">
-    <div class="wrapper">
-      <h2 class="title">
-        <span class="gradient">Vite</span>
-      </h2>
-      <p class="text">Next Generation Frontend Tooling</p>
-      <p class="tagline">
-        Get ready for a development environment that can finally catch up with
-        you.
-      </p>
+import iziToast from "izitoast";
+// Додатковий імпорт стилів
+import "izitoast/dist/css/iziToast.min.css";
+const inputDelay = document.querySelector("input[type='number']");
+inputDelay.classList.add('inputDelay');
+const fullfilledButton = document.querySelector("input[value='fulfilled']");
+fullfilledButton.classList.add('fullfilled');
+const rejectedButton = document.querySelector("input[value='rejected']");
+rejectedButton.classList.add('rejected');
 
-      <ul class="actions">
-        <li class="action">
-          <a
-            class="link"
-            href="https://vitejs.dev/guide/"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Get Started</a
-          >
-        </li>
-        <li class="action">
-          <a
-            class="link"
-            href="https://github.com/vitejs/vite"
-            target="_blank"
-            rel="noopener noreferrer"
-            >View on GitHub</a
-          >
-        </li>
-      </ul>
-    </div>
+const labels = document.querySelectorAll('label');
+labels.forEach((label) => {
+label.classList.add('labelStyle');
+});
+const fieldSet = document.querySelector('fieldset');
+fieldSet.classList.add('fieldsetStyle');
+const legend = document.querySelector('legend');
+legend.classList.add('legendStyle');
+const submitButton = document.querySelector('button');
+submitButton.classList.add('buttonNotify');
+let delay= 0;
 
-    <div class="thumb">
-      <!-- Path to images as from index.html file -->
-      <img
-        class="pic"
-        src="./img/vite-logo.png"
-        alt="Vite logo"
-        width="640"
-        height="640"
-      />
-    </div>
-  </div>
-</section>
+submitButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    const delay = parseInt(inputDelay.value);
+    const isFullfilled = fullfilledButton.checked;
+
+    const makePromise = ({ delay, shouldResolve}) => {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if (shouldResolve) {
+                    resolve();
+                } else {
+                    reject();
+                }
+            }, delay);
+        });
+    };
+
+    makePromise({ delay, shouldResolve: isFullfilled })
+        .then(() =>
+            iziToast.success({
+                // title: 'OK',
+                position: 'topCenter',
+                message: `✅ Fullfilled promise in ${delay}ms`,
+            }))
+        .catch(() =>
+            iziToast.error({
+                // title: 'Error',
+                position: 'topCenter',
+                message: `❌ Rejected promise in ${delay}ms`,
+            }));
+
+    inputDelay.value = '';
+    fullfilledButton.checked = false;
+    rejectedButton.checked = false;
+});
