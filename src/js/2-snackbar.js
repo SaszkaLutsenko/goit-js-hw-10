@@ -1,6 +1,5 @@
-import iziToast from "izitoast";
-// Додатковий імпорт стилів
-import "izitoast/dist/css/iziToast.min.css";
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
 const inputDelay = document.querySelector("input[type='number']");
 inputDelay.classList.add('inputDelay');
 const fullfilledButton = document.querySelector("input[value='fulfilled']");
