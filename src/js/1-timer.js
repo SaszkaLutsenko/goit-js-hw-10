@@ -73,7 +73,7 @@ buttonStart.addEventListener('click', () => {
     const { days, hours, minutes, seconds } = time;
 
     if (days >= 0 || hours >= 0 || minutes >= 0 || seconds >= 0) {
-      document.querySelector('[data-days').textContent = days
+      document.querySelector('[data-days]').textContent = days
         .toString()
         .padStart(2, '0');
       document.querySelector('[data-hours]').textContent = hours
