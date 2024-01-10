@@ -1,90 +1,147 @@
-import flatpickr from 'flatpickr';
-import 'flatpickr/dist/flatpickr.min.css';
-import izitoast from 'izitoast';
-import 'izitoast/dist/css/iziToast.min.css';
-import errorIcon from '../img/svg/error.svg';
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
+import iziToast from "izitoast";
+import "izitoast/dist/css/iziToast.min.css";
 
-let userSelectedDate;
-const buttonStart = document.querySelector('[data-start]');
-const options = {
+iziToast.settings({
+  position: "topRight",
+  timeout: 4000,
+  resetOnHover: true,
+  transitionIn: "flipInX",
+  transitionOut: "flipOutX"
+});
+
+let selectedTime;
+const inputField = document.querySelector("#datetime-picker");
+const startBtn = document.querySelector("button[data-start]");
+
+startBtn.addEventListener("click", (e) => {
+  timer.start(selectedTime);
+  switchBtn("On");
+});
+
+
+function switchBtn(switcher = "Off") {
+  let isBtnDisabled = startBtn.classList.contains("btn-disabled");
+  if (switcher === "On" && isBtnDisabled) {
+    startBtn.classList.remove("btn-disabled");
+    inputField.classList.remove("input-disabled");
+  } else if (!isBtnDisabled) {
+    startBtn.classList.add("btn-disabled");
+    inputField.classList.add("input-disabled");
+  }
+}
+
+flatpickr("#datetime-picker", {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
+  dateFormat: "Y-m-d H:i",
   minuteIncrement: 1,
-  locale: {
-    firstDayOfWeek: 1,
+  onClose(selectedDates) {
+    const dtNow = new Date();
+    const stampNow = dtNow.setSeconds(0,0);
+    const stampSel = Date.parse(selectedDates[0]);
+
+    if (stampNow < stampSel) {
+      selectedTime = stampSel;
+      switchBtn("On");
+      iziToast.success({message: "You have selected a correct date in the future!"});
+
+    } else {
+      timer.stop();
+      this.setDate(dtNow);
+      switchBtn("Off");
+      iziToast.error({message: "Please choose a date in the future!"});
+    }
   },
-  onOpen: function daysNames() {
-    document.querySelectorAll('.flatpickr-weekday').forEach(el => {
-      el.textContent = el.textContent.trim().slice(0, 2);
+});
+
+
+const timer = {
+  intervalId: null,
+  intervalMs: 1000,
+  dtObj: {},
+  selectedTime: 0,
+  pageElems: {},
+
+  init(pageElemsObj, finishFnc = null) {
+    this.pageElems = pageElemsObj;
+    if (finishFnc) {
+      this.finishFnc = finishFnc;
+    }
+  },
+
+  start(selectedTime) {
+    if (this.intervalId) {
+      iziToast.info({message: "Timer in progress! To restart, refresh this page."});
+      return;
+    }
+    this.selectedTime = selectedTime;
+    const timeDelta = selectedTime - Date.now();
+    if (timeDelta <= 0) {
+      iziToast.error({message: "Please choose a date in the future!"});
+      return;
+    }
+    this.dtObj = this.millisToObj(timeDelta);
+    Object.keys(this.dtObj).forEach(it => {
+        this.pageElems[it].textContent = this.dtObj[it].toString().padStart(2, "0");
+    });
+    this.intervalId = setInterval(() => this.updValues(), this.intervalMs);
+  },
+
+  updValues() {
+    const timeDelta = this.selectedTime - Date.now();
+    if (timeDelta <= 0) {
+      this.stop();
+      this.finishFnc();
+      return;
+    }
+
+    const newTimeObj = this.millisToObj(timeDelta);
+    Object.keys(this.dtObj).forEach(it => {
+      if (this.dtObj[it] != newTimeObj[it]) {
+        this.dtObj[it] = newTimeObj[it];
+        this.pageElems[it].textContent = newTimeObj[it].toString().padStart(2, "0");
+      }
     });
   },
-  onClose: function (selectedDates) {
-    console.log(selectedDates[0]);
-    userSelectedDate = selectedDates[0].getTime();
-    if (userSelectedDate >= Date.now()) {
-      buttonStart.removeAttribute('disabled');
-      buttonStart.classList.add('button-enabled');
-    } else {
-      izitoast.error({
-        title: 'Error',
-        message: 'Please choose a date in the future',
-        position: 'topRight',
-        iconUrl: `${errorIcon}`,
-        backgroundColor: '#EF4040',
-        titleColor: '#fff',
-        messageColor: '#fff',
-        messageSize: '16px',
-        progressBarColor: '#B51B1B',
-      });
-      buttonStart.setAttribute('disabled', true);
-      buttonStart.classList.remove('button-enabled');
+
+  stop() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = 0;
     }
   },
-};
-const dateTimeInput = flatpickr('#datetime-picker', options);
 
-function convertMs(ms) {
-  // Number of milliseconds per unit of time
-  const second = 1000;
-  const minute = second * 60;
-  const hour = minute * 60;
-  const day = hour * 24;
+  millisToObj(ms) {
+    const second = 1000;
+    const minute = second * 60;
+    const hour = minute * 60;
+    const day = hour * 24;
+    const days = Math.floor(ms / day);
+    const hours = Math.floor((ms % day) / hour);
+    const minutes = Math.floor(((ms % day) % hour) / minute);
+    const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+    return { days, hours, minutes, seconds };
+  },
 
-  // Remaining days
-  const days = Math.floor(ms / day);
-  // Remaining hours
-  const hours = Math.floor((ms % day) / hour);
-  // Remaining minutes
-  const minutes = Math.floor(((ms % day) % hour) / minute);
-  // Remaining seconds
-  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
-
-  return { days, hours, minutes, seconds };
+  finishFnc: () => {
+    iziToast.success({message: "FINISH: Object INTERNAL function invoked!"});
+  },
 }
 
-buttonStart.addEventListener('click', () => {
-  buttonStart.setAttribute('disabled', true);
-  buttonStart.classList.remove('button-enabled');
-  setInterval(() => {
-    const currentTime = Date.now();
-    const deltaTime = userSelectedDate - currentTime;
-    const time = convertMs(deltaTime);
-    const { days, hours, minutes, seconds } = time;
+const pageElemsObj = {
+  days: document.querySelector("span[data-days]"),
+  hours: document.querySelector("span[data-hours]"),
+  minutes: document.querySelector("span[data-minutes]"),
+  seconds: document.querySelector("span[data-seconds]")
+};
 
-    if (days >= 0 || hours >= 0 || minutes >= 0 || seconds >= 0) {
-      document.querySelector('[data-days]').textContent = days
-        .toString()
-        .padStart(2, '0');
-      document.querySelector('[data-hours]').textContent = hours
-        .toString()
-        .padStart(2, '0');
-      document.querySelector('[data-minutes]').textContent = minutes
-        .toString()
-        .padStart(2, '0');
-      document.querySelector('[data-seconds]').textContent = seconds
-        .toString()
-        .padStart(2, '0');
-    }
-  }, 1000);
-});
+timer.init(pageElemsObj, timerFinishExtFnc);
+// as a variant: can invoke internal "finish" function of obj timer
+// timer.init(pageElemsObj);
+
+function timerFinishExtFnc(){
+  iziToast.success({message: "FINISH: EXTERNAL function invoked!"});
+}
