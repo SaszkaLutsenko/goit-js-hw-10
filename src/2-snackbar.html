@@ -4,47 +4,38 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>Snackbar</title>
-    <link
-      href="
-https://cdn.jsdelivr.net/npm/modern-normalize@2.0.0/modern-normalize.min.css
-"
-      rel="stylesheet"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/styles.css" />
+    <title>Snack Bar</title>
   </head>
   <body>
     <section>
       <a href="./index.html">Go to home</a>
-      <form class="form">
-        <label>
-          Delay (ms)
-          <input class="delay" type="number" name="delay" required />
-        </label>
-
-        <fieldset>
-          <legend>State</legend>
-          <label>
-            <input type="radio" name="state" value="fulfilled" required />
-            Fulfilled
+    </section>
+    <section>
+      <div class="container">
+        <form class="form">
+          <label class="input-delay-label">
+            Delay (ms)
+            <input class="form-input-delay" type="number" name="delay" required />
           </label>
-          <label>
-            <input type="radio" name="state" value="rejected" required />
-            Rejected
-          </label>
-        </fieldset>
+          <fieldset class="form-fieldset">
+            <legend class="fieldset-legend">State</legend>
+            <label class="input-radio-label">
+              <input class="form-input-radio" type="radio" name="state" value="fulfilled" required />
+              Fulfilled
+            </label>
+            <label class="input-radio-label">
+              <input class="form-input-radio" type="radio" name="state" value="rejected" required />
+              Rejected
+            </label>
+          </fieldset>
 
-        <button class="create-btn" type="submit">Create notification</button>
-      </form>
+          <button class="form-submit-btn" type="submit">Create notification</button>
+        </form>
+      </div>
     </section>
     <script type="module" src="./js/2-snackbar.js"></script>
   </body>

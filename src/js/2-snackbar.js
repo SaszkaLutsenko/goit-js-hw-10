@@ -1,57 +1,42 @@
-import izitoast from 'izitoast';
-import 'izitoast/dist/css/iziToast.min.css';
-import errorIcon from '../img/svg/error.svg';
-import successIcon from '../img/svg/circle.svg';
+import iziToast from "izitoast";
+import "izitoast/dist/css/iziToast.min.css";
 
-const createForm = document.querySelector('form');
-
-createForm.addEventListener('submit', event => {
-  event.preventDefault();
-  const delay = event.currentTarget.elements.delay.value;
-  const radioChecked = document.querySelector('input[name="state"]:checked');
-
-  // ==================== Створення проміса ====================
-
-  const promise = new Promise((resolve, reject) => {
-    if (radioChecked.value === 'fulfilled') {
-      resolve(delay);
-    } else {
-      reject(delay);
-    }
-  });
-
-  // ==================== Виконання проміса ====================
-
-  promise
-    .then(delay => {
-      setTimeout(() => {
-        izitoast.success({
-          title: 'OK',
-          message: `Fulfilled promise in ${delay}ms`,
-          position: 'topRight',
-          iconUrl: `${successIcon}`,
-          backgroundColor: '#59A10D',
-          titleColor: '#fff',
-          messageColor: '#fff',
-          messageSize: '16px',
-          progressBarColor: '#B5EA7C',
-        });
-      }, delay);
-    })
-    .catch(delay => {
-      setTimeout(() => {
-        izitoast.error({
-          title: 'Error',
-          message: `Rejected promise in ${delay}ms`,
-          position: 'topRight',
-          iconUrl: `${errorIcon}`,
-          backgroundColor: '#EF4040',
-          titleColor: '#fff',
-          messageColor: '#fff',
-          messageSize: '16px',
-          progressBarColor: '#FFBEBE',
-        });
-      }, delay);
-    });
-  createForm.reset();
+iziToast.settings({
+  position: "topRight",
+  timeout: 3000,
+  resetOnHover: true,
+  transitionIn: "flipInX",
+  transitionOut: "flipOutX"
 });
+
+let isShown = false;
+const form = document.querySelector(".form");
+
+form.addEventListener("submit", promiseGenerator);
+
+function promiseGenerator(e) {
+  e.preventDefault();
+  const delay = form.elements.delay.value;
+  const state = form.elements.state.value;
+  // form reset with delay
+  if (!isShown) {
+    isShown = true;
+    iziToast.info({message: "Form will reset in 10 sec"});
+    setTimeout(() => {
+      iziToast.info({message: "Form reset..."});
+      form.reset();
+      isShown = false;
+    }, 10000);
+  }
+
+  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (state === "fulfilled") {
+        resolve(delay);
+      }
+      reject(delay);
+    }, delay);
+  })
+    .then(value => iziToast.success({message: `Fulfilled promise in ${value}ms`}))
+    .catch(error => iziToast.error({message: `Rejected promise in ${error}ms`}));
+}
